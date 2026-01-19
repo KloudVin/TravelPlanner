@@ -85,7 +85,7 @@ echo "🚀 Setting startup command..."
 az webapp config set \
     --resource-group $RESOURCE_GROUP \
     --name $WEBAPP_NAME \
-    --startup-file "python -m streamlit run app.py --server.port=8000 --server.address=0.0.0.0 --server.headless=true"
+    --startup-file "startup.sh"
 
 if [ $? -eq 0 ]; then
     echo "✅ Startup command set successfully"
