@@ -24,8 +24,13 @@ try:
     from pages.direction_itineraries import show_itinerary_pages
 except ImportError as e:
     st.error(f"Import error: {e}")
-    st.info("Please run 'python fix_imports.py' to resolve import issues.")
-    st.stop()
+    st.info("Some features may be limited due to missing dependencies.")
+    # Create minimal fallback data
+    DAY_TRIP_DESTINATIONS = []
+    MULTI_DAY_DESTINATIONS = []
+    KARNATAKA_WATERFALLS = []
+    KARNATAKA_HERITAGE_SITES = []
+    KARNATAKA_BEACHES = []
 
 # Page configuration
 st.set_page_config(
