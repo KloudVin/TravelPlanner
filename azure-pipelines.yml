@@ -4,22 +4,92 @@
 trigger:
   - main
 
+# Use Microsoft-hosted agents (free tier)
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  # Terraform variables
-  terraformVersion: '1.6.5'
-  workingDirectory: '$(System.DefaultWorkingDirectory)/deployment'
+# Limit concurrent jobs to 1 to avoid parallelism issues
+jobs:
+- job: 'SetupAndDeploy'
+  displayName: 'Setup Infrastructure and Deploy Application'
+  steps:
+  - task: TerraformInstaller@0
+    displayName: 'Install Terraform'
+    inputs:
+      terraformVersion: '1.6.5'
 
-  # Azure variables
-  azureSubscription: 'your-azure-subscription-name'  # Update this with your service connection name
-  resourceGroupName: 'TravelPlanner'
-  webAppName: 'vintekh'
-  location: 'Central US'
-  storageAccountName: 'tfstate$(Build.BuildId)'
+  - task: AzureCLI@2
+    displayName: 'Create Storage Account for Terraform State'
+    inputs:
+      azureSubscription: 'your-azure-subscription-name'  # Update this
+      scriptType: 'bash'
+      scriptLocation: 'inlineScript'
+      inlineScript: |
+        # Create resource group if it doesn't exist
+        az group create --name TravelPlanner --location "Central US" --output none
 
-stages:
+        # Create storage account for Terraform state
+        STORAGE_ACCOUNT="tfstate$(Build.BuildId)"
+        az storage account create \
+          --name $STORAGE_ACCOUNT \
+          --resource-group TravelPlanner \
+          --location "Central US" \
+          --sku Standard_LRS \
+          --encryption-services blob \
+          --output none
+
+        # Create storage container
+        az storage container create \
+          --name tfstate \
+          --account-name $STORAGE_ACCOUNT \
+          --output none
+
+        # Set environment variable for storage account name
+        echo "##vso[task.setvariable variable=storageAccountName]$STORAGE_ACCOUNT"
+
+  - task: TerraformTaskV3@3
+    displayName: 'Terraform Init'
+    inputs:
+      provider: 'azurerm'
+      command: 'init'
+      workingDirectory: 'deployment'
+      backendServiceArm: 'your-azure-subscription-name'  # Update this
+      backendAzureRmResourceGroupName: 'TravelPlanner'
+      backendAzureRmStorageAccountName: $(storageAccountName)
+      backendAzureRmContainerName: 'tfstate'
+      backendAzureRmKey: 'terraform.tfstate'
+
+  - task: TerraformTaskV3@3
+    displayName: 'Terraform Validate'
+    inputs:
+      provider: 'azurerm'
+      command: 'validate'
+      workingDirectory: 'deployment'
+
+  - task: TerraformTaskV3@3
+    displayName: 'Terraform Plan'
+    inputs:
+      provider: 'azurerm'
+      command: 'plan'
+      workingDirectory: 'deployment'
+      environmentServiceNameAzureRM: 'your-azure-subscription-name'  # Update this
+
+  - task: TerraformTaskV3@3
+    displayName: 'Terraform Apply'
+    inputs:
+      provider: 'azurerm'
+      command: 'apply'
+      workingDirectory: 'deployment'
+      environmentServiceNameAzureRM: 'your-azure-subscription-name'  # Update this
+
+  - task: AzureWebApp@1
+    displayName: 'Deploy Azure Web App'
+    inputs:
+      azureSubscription: 'your-azure-subscription-name'  # Update this
+      appType: 'webAppLinux'
+      appName: 'vintekh'
+      package: '$(System.DefaultWorkingDirectory)/**'
+      deploymentMethod: 'auto'
 - stage: 'SetupBackend'
   displayName: 'Setup Terraform Backend'
   jobs:
