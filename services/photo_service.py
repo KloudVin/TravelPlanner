@@ -12,8 +12,13 @@ class PhotoService:
     """Service to fetch and manage destination photos"""
     
     def __init__(self):
-        self.unsplash_access_key = st.secrets.get("UNSPLASH_ACCESS_KEY", "")
-        self.pexels_api_key = st.secrets.get("PEXELS_API_KEY", "")
+        try:
+            self.unsplash_access_key = st.secrets.get("UNSPLASH_ACCESS_KEY", "")
+            self.pexels_api_key = st.secrets.get("PEXELS_API_KEY", "")
+        except:
+            # Handle case when secrets are not available (local testing)
+            self.unsplash_access_key = ""
+            self.pexels_api_key = ""
         self.cache = {}
     
     def get_destination_photos(self, destination_name: str, count: int = 5) -> List[str]:

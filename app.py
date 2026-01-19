@@ -6,14 +6,26 @@ import plotly.express as px
 import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import json
+import sys
+import os
+
+# Add current directory to path for imports
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
 # Import our comprehensive data and components
-from data.destinations import (
-    DAY_TRIP_DESTINATIONS, MULTI_DAY_DESTINATIONS, TOUR_PACKAGES,
-    KARNATAKA_WATERFALLS, KARNATAKA_HERITAGE_SITES, KARNATAKA_BEACHES
-)
-from components.multimedia import multimedia_manager
-from pages.direction_itineraries import show_itinerary_pages
+try:
+    from data.destinations import (
+        DAY_TRIP_DESTINATIONS, MULTI_DAY_DESTINATIONS, TOUR_PACKAGES,
+        KARNATAKA_WATERFALLS, KARNATAKA_HERITAGE_SITES, KARNATAKA_BEACHES
+    )
+    from components.multimedia import multimedia_manager
+    from pages.direction_itineraries import show_itinerary_pages
+except ImportError as e:
+    st.error(f"Import error: {e}")
+    st.info("Please run 'python fix_imports.py' to resolve import issues.")
+    st.stop()
 
 # Page configuration
 st.set_page_config(
