@@ -13,7 +13,7 @@ variables:
   workingDirectory: '$(System.DefaultWorkingDirectory)/deployment'
 
   # Azure variables
-  azureSubscription: 'your-azure-subscription-name'  # Update this with your service connection name
+  azureSubscription: 'Hub'  # Update this with your service connection name
   resourceGroupName: 'TravelPlanner'
   webAppName: 'vintekh'
   location: 'Central US'
