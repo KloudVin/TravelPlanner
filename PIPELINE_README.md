@@ -38,15 +38,16 @@ The pipeline consists of three main stages:
 3. Select **Azure Resource Manager**
 4. Choose **Service principal (automatic)**
 5. Select your subscription and resource group
-6. Name it: `Azure-Subscription` (or update the pipeline variable)
+6. **Name it: `Azure-Service-Connection`** (this matches the pipeline variable)
+7. Click **Save**
 
-### Step 2: Configure Pipeline Variables
+### Step 2: Configure Pipeline Variables (Optional)
 
-In your pipeline, go to **Variables** tab and add:
+The pipeline uses a default variable, but you can override it:
 
-| Variable Name | Value | Description |
-|---------------|-------|-------------|
-| `azureSubscription` | `Azure-Subscription` | Your service connection name |
+| Variable Name | Default Value | Description |
+|---------------|---------------|-------------|
+| `azureSubscription` | `Azure-Service-Connection` | Your service connection name |
 | `resourceGroupName` | `TravelPlanner` | Resource group name |
 | `webAppName` | `vintekh` | Web app name |
 | `location` | `Central US` | Azure region |

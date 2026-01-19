@@ -8,6 +8,9 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  azureSubscription: 'Azure-Service-Connection'  # Update this to match your service connection name
+
 # Limit concurrent jobs to 1 to avoid parallelism issues
 jobs:
 - job: 'SetupAndDeploy'
@@ -21,7 +24,7 @@ jobs:
   - task: AzureCLI@2
     displayName: 'Create Storage Account for Terraform State'
     inputs:
-      azureSubscription: 'your-azure-subscription-name'  # Update this
+      azureSubscription: $(azureSubscription)
       scriptType: 'bash'
       scriptLocation: 'inlineScript'
       inlineScript: |
@@ -53,7 +56,7 @@ jobs:
       provider: 'azurerm'
       command: 'init'
       workingDirectory: 'deployment'
-      backendServiceArm: 'your-azure-subscription-name'  # Update this
+      backendServiceArm: $(azureSubscription)
       backendAzureRmResourceGroupName: 'TravelPlanner'
       backendAzureRmStorageAccountName: $(storageAccountName)
       backendAzureRmContainerName: 'tfstate'
@@ -72,7 +75,7 @@ jobs:
       provider: 'azurerm'
       command: 'plan'
       workingDirectory: 'deployment'
-      environmentServiceNameAzureRM: 'your-azure-subscription-name'  # Update this
+      environmentServiceNameAzureRM: $(azureSubscription)
 
   - task: TerraformTaskV3@3
     displayName: 'Terraform Apply'
@@ -80,12 +83,12 @@ jobs:
       provider: 'azurerm'
       command: 'apply'
       workingDirectory: 'deployment'
-      environmentServiceNameAzureRM: 'your-azure-subscription-name'  # Update this
+      environmentServiceNameAzureRM: $(azureSubscription)
 
   - task: AzureWebApp@1
     displayName: 'Deploy Azure Web App'
     inputs:
-      azureSubscription: 'your-azure-subscription-name'  # Update this
+      azureSubscription: $(azureSubscription)
       appType: 'webAppLinux'
       appName: 'vintekh'
       package: '$(System.DefaultWorkingDirectory)/**'
