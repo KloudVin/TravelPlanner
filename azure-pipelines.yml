@@ -15,6 +15,7 @@ variables:
   azureSubscription: 'Hub(64132586-e6cc-436d-b2dd-26d6a11df4f7)'  # Update this to match your service connection name
 
 # Serial jobs: Infrastructure first, then Application
+# NOTE: Jobs run serially due to dependsOn - no parallelism used
 jobs:
 - job: 'DeployInfrastructure'
   displayName: 'Deploy Infrastructure with Terraform'
