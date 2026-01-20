@@ -15,6 +15,48 @@ class MultimediaManager:
         self.photo_cache = {}
         self.video_cache = {}
     
+    def display_video_banner(self, video_url=None, title="Karnataka Tourism", height=400):
+        """Display an attractive video banner"""
+        st.markdown(f"""
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h2 style="color: #FF6B35; margin-bottom: 1rem;">🌟 {title}</h2>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        if video_url:
+            try:
+                # Display video with custom styling
+                video_html = f"""
+                <div style="width: 100%; height: {height}px; border-radius: 15px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+                    <iframe width="100%" height="{height}" src="{video_url}" 
+                            frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen style="border-radius: 15px;">
+                    </iframe>
+                </div>
+                """
+                st.markdown(video_html, unsafe_allow_html=True)
+            except Exception as e:
+                st.error(f"Could not load video: {e}")
+                self.display_fallback_banner()
+        else:
+            self.display_fallback_banner()
+    
+    def display_fallback_banner(self):
+        """Display a beautiful fallback image banner"""
+        banner_html = """
+        <div style="width: 100%; height: 400px; border-radius: 15px; overflow: hidden; 
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                    display: flex; align-items: center; justify-content: center; 
+                    box-shadow: 0 8px 32px rgba(0,0,0,0.1); margin-bottom: 2rem;">
+            <div style="text-align: center; color: white;">
+                <h1 style="font-size: 3rem; margin-bottom: 1rem;">🏛️ Karnataka</h1>
+                <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Land of Rich Heritage & Natural Beauty</h2>
+                <p style="font-size: 1.2rem;">Discover the magic of Karnataka's temples, beaches, and hidden gems</p>
+            </div>
+        </div>
+        """
+        st.markdown(banner_html, unsafe_allow_html=True)
+    
     def display_destination_gallery(self, destination):
         """Display photo gallery for a destination"""
         

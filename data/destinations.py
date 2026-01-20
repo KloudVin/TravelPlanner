@@ -5,6 +5,18 @@ Including famous destinations and hidden gems with multimedia content
 
 from services.photo_service import get_curated_photos, get_destination_video
 
+# Karnataka Tourism Video URLs
+KARNATAKA_VIDEOS = {
+    "banner": "https://www.youtube.com/embed/VIDEO_ID_HERE",  # Replace with actual Karnataka tourism video
+    "mysore_palace": "https://www.youtube.com/embed/VIDEO_ID_HERE",
+    "hampi": "https://www.youtube.com/embed/VIDEO_ID_HERE",
+    "coorg": "https://www.youtube.com/embed/VIDEO_ID_HERE",
+    "badami": "https://www.youtube.com/embed/VIDEO_ID_HERE",
+    "chikmagalur": "https://www.youtube.com/embed/VIDEO_ID_HERE",
+    "dandeli": "https://www.youtube.com/embed/VIDEO_ID_HERE",
+    "maravanthe": "https://www.youtube.com/embed/VIDEO_ID_HERE"
+}
+
 # Photo and video URLs for destinations
 def get_destination_media(destination_name, media_type="photo"):
     """Generate media URLs for destinations"""
