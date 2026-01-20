@@ -71,11 +71,36 @@ jobs:
   displayName: 'Deploy Application to Azure Web App'
   dependsOn: 'DeployInfrastructure'
   steps:
+  - task: CopyFiles@2
+    displayName: 'Copy application files'
+    inputs:
+      SourceFolder: '$(System.DefaultWorkingDirectory)'
+      Contents: |
+        app.py
+        requirements.txt
+        startup.sh
+        verify_deployment.py
+        components/**
+        data/**
+        pages/**
+        services/**
+        utils/**
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/app'
+
+  - task: ArchiveFiles@2
+    displayName: 'Create deployment package'
+    inputs:
+      rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/app'
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/deployment.zip'
+      replaceExistingArchive: true
+
   - task: AzureWebApp@1
     displayName: 'Deploy Azure Web App'
     inputs:
       azureSubscription: $(azureSubscription)
       appType: 'webAppLinux'
       appName: 'vintekh'
-      package: '$(System.DefaultWorkingDirectory)/**'
+      package: '$(Build.ArtifactStagingDirectory)/deployment.zip'
       deploymentMethod: 'auto'
