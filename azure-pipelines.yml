@@ -87,6 +87,14 @@ jobs:
         utils/**
       TargetFolder: '$(Build.ArtifactStagingDirectory)/app'
 
+  - task: Bash@3
+    displayName: 'Install zip utility'
+    inputs:
+      targetType: 'inline'
+      script: |
+        sudo apt-get update
+        sudo apt-get install -y zip
+
   - task: ArchiveFiles@2
     displayName: 'Create deployment package'
     inputs:
