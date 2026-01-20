@@ -11,8 +11,8 @@ terraform {
 
   # Backend configuration for Azure DevOps pipeline
   backend "azurerm" {
-    resource_group_name  = "TravelPlanner"
-    storage_account_name = "tfstate"
+    resource_group_name  = "TerraformBackent"
+    storage_account_name = "vintekhtfbackend"
     container_name       = "tfstate"
     key                  = "terraform.tfstate"
   }
